@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)file:///F:/USUARIOS/S!LkRoadG/SiLk%20Road%20Crea/index_3.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MANCO GenZERO — Actualizador de firmware</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./MANCO GenZERO — Actualizador de firmware_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --bg-void: #0b0d0c;
+    --panel: #14181a;
+    --panel-2: #191e20;
+    --line: #262b2d;
+    --phosphor: #ffb000;
+    --phosphor-dim: #7a5400;
+    --phosphor-glow: rgba(255,176,0,0.35);
+    --danger: #ff5a4d;
+    --ink: #e9e6df;
+    --ink-dim: #9a9c98;
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background: var(--bg-void);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* sutil textura CRT de fondo */
+  body::before{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events:none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.025) 0px,
+      rgba(255,255,255,0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 1;
+  }
+
+  body::after{
+    content:"";
+    position: fixed;
+    inset: 0;
+    pointer-events:none;
+    background: radial-gradient(ellipse at 50% 30%, rgba(255,176,0,0.06), transparent 60%);
+    z-index: 1;
+  }
+
+  .panel{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 460px;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px 28px 28px;
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color: var(--phosphor);
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .eyebrow svg{ flex-shrink:0; }
+
+  h1{
+    font-family: "Press Start 2P", monospace;
+    font-size: 20px;
+    line-height: 1.5;
+    margin: 0 0 6px;
+    color: var(--ink);
+    text-shadow: 0 0 18px var(--phosphor-glow);
+  }
+
+  .version-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--phosphor);
+    background: rgba(255,176,0,0.08);
+    border: 1px solid var(--phosphor-dim);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin-bottom: 26px;
+  }
+
+  .version-tag .dot{
+    width:6px; height:6px; border-radius:50%;
+    background: var(--phosphor);
+    box-shadow: 0 0 8px var(--phosphor);
+  }
+
+  .steps{
+    list-style: none;
+    margin: 0 0 26px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .steps li{
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-dim);
+  }
+
+  .steps li b{ color: var(--ink); font-weight: 600; }
+
+  .steps .num{
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    color: var(--phosphor);
+    font-size: 13px;
+  }
+
+  button#flashBtn{
+    width: 100%;
+    padding: 16px 20px;
+    font-family: "Press Start 2P", monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: #1a1200;
+    background: linear-gradient(180deg, #ffc94d, var(--phosphor));
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 8px 0 var(--phosphor-dim), 0 10px 24px var(--phosphor-glow);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+
+  button#flashBtn:hover:not(:disabled){ filter: brightness(1.05); }
+
+  button#flashBtn:active:not(:disabled){
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 var(--phosphor-dim), 0 4px 12px var(--phosphor-glow);
+  }
+
+  button#flashBtn:disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+    box-shadow: 0 8px 0 #3a3a3a;
+    background: #555;
+    color: #999;
+  }
+
+  .status{
+    margin-top: 16px;
+    min-height: 20px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  .status.is-error{ color: var(--danger); }
+  .status.is-ok{ color: var(--phosphor); }
+
+  .fallback{
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+
+  .fallback a{ color: var(--phosphor); text-decoration: none; border-bottom: 1px dotted var(--phosphor-dim); }
+  .fallback a:hover{ border-bottom-style: solid; }
+
+  footer{
+    margin-top: 22px;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-align: center;
+  }
+
+  footer a{ color: var(--ink-dim); }
+
+  :focus-visible{
+    outline: 2px solid var(--phosphor);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 380px){
+    h1{ font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <main class="panel">
+    <div class="eyebrow">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"></circle>
+        <line x1="8" y1="0.5" x2="8" y2="4" stroke="currentColor" stroke-width="1.3"></line>
+        <line x1="8" y1="12" x2="8" y2="15.5" stroke="currentColor" stroke-width="1.3"></line>
+        <line x1="0.5" y1="8" x2="4" y2="8" stroke="currentColor" stroke-width="1.3"></line>
+        <line x1="12" y1="8" x2="15.5" y2="8" stroke="currentColor" stroke-width="1.3"></line>
+      </svg>
+      Actualizador de firmware
+    </div>
+
+    <h1>MANCO<br>GenZERO</h1>
+
+    <div class="version-tag">
+      <span class="dot"></span>
+      v2.0 · basado en OpenFIRE
+    </div>
+
+    <ol class="steps">
+      <li><span class="num">1</span><span><b>Conectá</b> la Manco por USB — no hace falta tocar ningún botón todavía.</span></li>
+      <li><span class="num">2</span><span>Hacé click abajo: vas a elegir el puerto de la Manco, y se reinicia sola en modo actualización.</span></li>
+      <li><span class="num">3</span><span>Cuando el navegador te pida elegir una carpeta, elegí la unidad <b>RPI-RP2</b>.</span></li>
+      <li><span class="num">4</span><span>Esperá — la Manco se reinicia sola cuando termina. No la desconectes antes.</span></li>
+    </ol>
+
+    
+    <p class="status is-error" id="status" role="status" aria-live="polite">Actualización automática no disponible en este navegador.</p>
+    
+
+    <div class="fallback" id="fallback">
+      <strong>¿No te funciona?</strong> Tu navegador no soporta actualización automática (necesitás Chrome, Edge u Opera en PC/Mac). Podés hacerlo a mano:
+      descargá el <a id="manualLink" href="https://github.com/Juguetoide/MANCO-GenZERO/releases/download/v2.0/MANCO_GenZERO_2.0.uf2" target="_blank" rel="noopener">archivo .uf2</a> y arrastralo sobre la unidad RPI-RP2 cuando la Manco esté en modo BOOTSEL.
+    </div>
+
+    <footer>
+      Basado en <a href="https://github.com/TeamOpenFIRE/OpenFIRE-Firmware" target="_blank" rel="noopener">OpenFIRE-Firmware</a> (TeamOpenFIRE) · LGPL-2.1
+    </footer>
+  </main>
+
+<script>
+(function () {
+  const FW_URL = "https://github.com/Juguetoide/MANCO-GenZERO/releases/download/v2.0/MANCO_GenZERO_2.0.uf2";
+  const FW_FILENAME = "MANCO_GenZERO_2.0.uf2";
+
+  const btn = document.getElementById("flashBtn");
+  const skipLink = document.getElementById("skipSerial");
+  const statusEl = document.getElementById("status");
+  const fallback = document.getElementById("fallback");
+  const manualLink = document.getElementById("manualLink");
+
+  manualLink.href = FW_URL;
+
+  let firmwareBuffer = null;
+  const supported = "showDirectoryPicker" in window;
+  const serialSupported = "serial" in navigator;
+
+  function setStatus(msg, kind) {
+    statusEl.textContent = msg;
+    statusEl.className = "status" + (kind ? " is-" + kind : "");
+  }
+
+  if (!supported) {
+    btn.remove();
+    if (skipLink) skipLink.remove();
+    fallback.hidden = false;
+    setStatus("Actualización automática no disponible en este navegador.", "error");
+    return;
+  }
+
+  // Precarga el firmware apenas se abre la página, para que el flasheo sea instantáneo al hacer click.
+  fetch(FW_URL)
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.arrayBuffer();
+    })
+    .then((buf) => {
+      firmwareBuffer = buf;
+      btn.disabled = false;
+      btn.textContent = "ACTUALIZAR MANCO";
+      setStatus("Listo. Conectá la Manco por USB y hacé click arriba.");
+    })
+    .catch(() => {
+      fallback.hidden = false;
+      setStatus("No se pudo descargar el firmware automáticamente. Usá el método manual de abajo.", "error");
+    });
+
+  // Truco estándar de la Raspberry Pi Pico: abrir el puerto serie a 1200 baudios
+  // y cerrarlo hace que el chip se reinicie solo en modo BOOTSEL (bootloader UF2).
+  // Esto es un comportamiento del propio framework/bootloader, no un comando de OpenFIRE.
+  async function resetToBootloader() {
+    if (!serialSupported) return false;
+    let port;
+    try {
+      port = await navigator.serial.requestPort();
+    } catch (err) {
+      // el usuario cerró el selector de puerto sin elegir nada (o ya está en BOOTSEL y no hay puerto serie que mostrar)
+      return false;
+    }
+    try {
+      await port.open({ baudRate: 1200 });
+      await port.close();
+      return true;
+    } catch (err) {
+      // el dispositivo suele desconectarse en medio del cierre; es esperable, no un fallo real.
+      return true;
+    }
+  }
+
+  async function pickAndFlash() {
+    let dirHandle;
+    try {
+      dirHandle = await window.showDirectoryPicker({ mode: "readwrite" });
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = "ACTUALIZAR MANCO";
+      setStatus("Cancelado. Cuando quieras, volvé a intentarlo.");
+      return;
+    }
+
+    // valida que sea realmente la unidad de la Raspberry Pi Pico en modo BOOTSEL
+    let isPicoDrive = false;
+    try {
+      for await (const [name] of dirHandle.entries()) {
+        if (name.toUpperCase() === "INFO_UF2.TXT") {
+          isPicoDrive = true;
+          break;
+        }
+      }
+    } catch (err) {
+      // algunos navegadores tiran error si la carpeta está vacía o no tiene permiso de listado; seguimos igual
+    }
+
+    if (!isPicoDrive) {
+      btn.disabled = false;
+      btn.textContent = "ACTUALIZAR MANCO";
+      setStatus("Esa no parece ser la unidad RPI-RP2. Verificá el modo BOOTSEL y probá de nuevo.", "error");
+      return;
+    }
+
+    btn.textContent = "COPIANDO FIRMWARE…";
+    setStatus("Copiando " + FW_FILENAME + "…");
+
+    try {
+      const fileHandle = await dirHandle.getFileHandle(FW_FILENAME, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(firmwareBuffer);
+      await writable.close();
+
+      btn.textContent = "¡LISTO!";
+      setStatus("Firmware copiado. La Manco se reinicia sola con la nueva versión.", "ok");
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "ACTUALIZAR MANCO";
+        setStatus("Listo para actualizar de nuevo cuando quieras.");
+      }, 4000);
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = "ACTUALIZAR MANCO";
+      setStatus("No se pudo escribir el archivo (" + err.message + "). Probá con el método manual.", "error");
+    }
+  }
+
+  btn.addEventListener("click", async () => {
+    if (!firmwareBuffer) return;
+    btn.disabled = true;
+
+    if (serialSupported) {
+      btn.textContent = "ELEGÍ EL PUERTO DE LA MANCO…";
+      setStatus("Esperando que elijas el puerto de la Manco…");
+      const didReset = await resetToBootloader();
+      if (didReset) {
+        btn.textContent = "REINICIANDO…";
+        setStatus("Reiniciando la Manco en modo actualización…");
+        await new Promise((r) => setTimeout(r, 2500));
+      }
+    }
+
+    btn.textContent = "ELEGÍ LA UNIDAD RPI-RP2…";
+    setStatus("Esperando que selecciones la unidad en el navegador…");
+    await pickAndFlash();
+  });
+
+  if (skipLink) {
+    skipLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!firmwareBuffer) return;
+      btn.disabled = true;
+      btn.textContent = "ELEGÍ LA UNIDAD RPI-RP2…";
+      setStatus("Esperando que selecciones la unidad en el navegador…");
+      await pickAndFlash();
+    });
+  }
+})();
+</script>
+
+
+
+</body></html>
