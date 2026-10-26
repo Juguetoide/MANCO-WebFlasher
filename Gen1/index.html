@@ -9,6 +9,7 @@
   :root{--bg:#f3f4f6;--card:#fff;--fg:#1a1c20;--mut:#5b6270;--ac:#ff6a2b;--bd:#d6d9df;--err:#d63c3c}
   @media (prefers-color-scheme:dark){:root{--bg:#14161a;--card:#1e2128;--fg:#e9ebef;--mut:#9aa1ad;--bd:#343842}}
   *{box-sizing:border-box}
+  [hidden]{display:none!important}
   body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;display:flex;justify-content:center;padding:24px 16px}
   main{max-width:520px;width:100%}
   h1{margin:0 0 4px;font-size:1.6rem}
@@ -34,10 +35,10 @@
     <p id="warn" hidden>Este navegador no soporta Web Serial. Usá Chrome o Edge en PC.</p>
 
     <label for="device">Dispositivo</label>
-    <select id="device"></select>
+    <select id="device" autocomplete="off"></select>
 
     <label for="version">Firmware</label>
-    <select id="version"></select>
+    <select id="version" autocomplete="off"></select>
     <p class="note" id="note"></p>
 
     <p id="none" hidden>Todavía no hay firmware publicado para este dispositivo.</p>
@@ -48,7 +49,7 @@
       <span slot="not-allowed"></span>
     </esp-web-install-button>
 
-       <ul>
+    <ul>
       <li>Usá un cable USB de datos, conectado directo a la PC.</li>
       <li>Para entrar en modo actualización, mantené apretado el botón de actualización de la MANCO mientras la conectás al USB de la computadora.</li>
       <li>Se reinstala el firmware completo; tus ajustes guardados se conservan.</li>
@@ -62,7 +63,7 @@ let catalog, blobUrl;
 
 if (!('serial' in navigator)) $('warn').hidden = false;
 
-fetch('catalog.json').then(r => r.json()).then(c => {
+fetch('catalog.json', { cache: 'no-store' }).then(r => r.json()).then(c => {
   catalog = c;
   $('device').innerHTML = c.devices.map((d, i) =>
     `<option value="${i}">${d.name}${d.versions.length ? '' : ' (próximamente)'}</option>`).join('');
