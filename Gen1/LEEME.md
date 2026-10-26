@@ -14,6 +14,6 @@ Solo Chrome/Edge en PC (necesitan Web Serial).
    `{ "version": "X.Y.Z", "file": "firmware/lightgun/MANCO-Gen1-vX.Y.Z.bin", "note": "qué cambió" }`
 3. Commit y push. La primera de la lista se marca como "última".
 
-## Agregar Dongle / Pedal
-Copiá sus `.bin` a `firmware/dongle/` o `firmware/pedal/` y completá `versions` de ese dispositivo en `catalog.json`.
+## Agregar Pedal
+Copiá sus `.bin` a `firmware/pedal/` y completá `versions` de ese dispositivo en `catalog.json`.
 Siempre usar el archivo `firmware.factory.bin` (incluye bootloader + particiones + app y se escribe en offset 0).
