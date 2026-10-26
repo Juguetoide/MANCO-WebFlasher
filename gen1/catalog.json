@@ -1,0 +1,21 @@
+{
+  "devices": [
+    {
+      "id": "lightgun",
+      "name": "Pistola (Lightgun)",
+      "chipFamily": "ESP32-S3",
+      "versions": [
+        { "version": "1.0.7", "file": "firmware/lightgun/MANCO-Gen1-v1.0.7.bin", "note": "Pines personalizados activos por defecto." },
+        { "version": "1.0.6", "file": "firmware/lightgun/MANCO-Gen1-v1.0.6.bin" },
+        { "version": "1.0.5", "file": "firmware/lightgun/MANCO-Gen1-v1.0.5.bin", "note": "Modo vincular." },
+        { "version": "1.0.4", "file": "firmware/lightgun/MANCO-Gen1-v1.0.4.bin", "note": "La pistola recuerda su pedal (no probada en hardware)." },
+        { "version": "1.0.3", "file": "firmware/lightgun/MANCO-Gen1-v1.0.3.bin" },
+        { "version": "1.0.2", "file": "firmware/lightgun/MANCO-Gen1-v1.0.2.bin" },
+        { "version": "1.0.1", "file": "firmware/lightgun/MANCO-Gen1-v1.0.1.bin" },
+        { "version": "1.0.0", "file": "firmware/lightgun/MANCO-Gen1-v1.0.0.bin" }
+      ]
+    },
+    { "id": "dongle", "name": "Dongle", "chipFamily": "ESP32-S3", "versions": [] },
+    { "id": "pedal",  "name": "Pedal",  "chipFamily": "ESP32-S3", "versions": [] }
+  ]
+}
