@@ -15,7 +15,7 @@
         { "version": "1.0.0", "file": "firmware/lightgun/MANCO-Gen1-v1.0.0.bin" }
       ]
     },
-    { "id": "dongle", "name": "Dongle", "chipFamily": "ESP32-S3", "versions": [] },
+    
     { "id": "pedal",  "name": "Pedal",  "chipFamily": "ESP32-S3", "versions": [] }
   ]
 }
