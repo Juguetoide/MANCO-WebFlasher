@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MANCO Web Flasher</title>
+<style>
+  :root{--bg:#f3f4f6;--card:#fff;--fg:#1a1c20;--mut:#5b6270;--ac:#ff6a2b;--bd:#d6d9df}
+  @media (prefers-color-scheme:dark){:root{--bg:#14161a;--card:#1e2128;--fg:#e9ebef;--mut:#9aa1ad;--bd:#343842}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;display:flex;justify-content:center;padding:24px 16px}
+  main{max-width:520px;width:100%}
+  h1{margin:0 0 4px;font-size:1.6rem}
+  p{color:var(--mut)}
+  a.card{display:block;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-top:16px;text-decoration:none;color:var(--fg)}
+  a.card:hover{border-color:var(--ac)}
+  a.card b{font-size:1.15rem} a.card span{display:block;color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>MANCO Web Flasher</h1>
+  <p>Elegí tu modelo para actualizar el firmware desde el navegador (Chrome o Edge en PC).</p>
+  <a class="card" href="GenZERO/"><b>MANCO GenZERO</b><span>Raspberry Pi Pico (RP2040)</span></a>
+  <a class="card" href="Gen1/"><b>MANCO Gen1</b><span>ESP32-S3</span></a>
+</main>
+</body>
+</html>
