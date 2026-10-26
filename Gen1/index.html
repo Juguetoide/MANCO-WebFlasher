@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MANCO Web Flasher</title>
+<script type="module" src="https://unpkg.com/esp-web-tools@10.0.1/dist/web/install-button.js?module"></script>
+<style>
+  :root{--bg:#f3f4f6;--card:#fff;--fg:#1a1c20;--mut:#5b6270;--ac:#ff6a2b;--bd:#d6d9df;--err:#d63c3c}
+  @media (prefers-color-scheme:dark){:root{--bg:#14161a;--card:#1e2128;--fg:#e9ebef;--mut:#9aa1ad;--bd:#343842}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;display:flex;justify-content:center;padding:24px 16px}
+  main{max-width:520px;width:100%}
+  h1{margin:0 0 4px;font-size:1.6rem}
+  .card{background:var(--card);border-radius:12px;padding:20px;margin-top:16px}
+  label{display:block;font-weight:600;margin-top:16px}
+  label:first-child{margin-top:0}
+  select{width:100%;font:inherit;padding:12px;margin-top:6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}
+  .mut{color:var(--mut)} .note{min-height:1.5em;font-size:.9rem;color:var(--mut);margin:6px 0 0}
+  #flash{margin-top:20px;display:block;text-align:center}
+  esp-web-install-button button{width:100%;font:inherit;font-weight:700;padding:14px;border:0;border-radius:8px;background:var(--ac);color:#fff;cursor:pointer}
+  esp-web-install-button button:hover{filter:brightness(1.08)}
+  #warn{color:var(--err);margin:16px 0 0}
+  ul{padding-left:20px;color:var(--mut);font-size:.9rem}
+  #none{color:var(--mut);text-align:center;margin:20px 0 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>MANCO Web Flasher</h1>
+  <p class="mut">Instalá el firmware en tu dispositivo MANCO desde el navegador.</p>
+
+  <div class="card">
+    <p id="warn" hidden>Este navegador no soporta Web Serial. Usá Chrome o Edge en PC.</p>
+
+    <label for="device">Dispositivo</label>
+    <select id="device"></select>
+
+    <label for="version">Firmware</label>
+    <select id="version"></select>
+    <p class="note" id="note"></p>
+
+    <p id="none" hidden>Todavía no hay firmware publicado para este dispositivo.</p>
+
+    <esp-web-install-button id="flash">
+      <button slot="activate">Flashear firmware</button>
+      <span slot="unsupported"></span>
+      <span slot="not-allowed"></span>
+    </esp-web-install-button>
+
+    <ul>
+      <li>Usá un cable USB de datos, conectado directo a la PC.</li>
+      <li>Si no conecta, mantené apretado el botón BOOT al hacer clic en Flashear.</li>
+      <li>Se reinstala el firmware completo; si no cambia la tabla de particiones, tus ajustes guardados se conservan.</li>
+    </ul>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let catalog, blobUrl;
+
+if (!('serial' in navigator)) $('warn').hidden = false;
+
+fetch('catalog.json').then(r => r.json()).then(c => {
+  catalog = c;
+  $('device').innerHTML = c.devices.map((d, i) =>
+    `<option value="${i}">${d.name}${d.versions.length ? '' : ' (próximamente)'}</option>`).join('');
+  $('device').value = Math.max(0, c.devices.findIndex(d => d.versions.length));
+  fillVersions();
+});
+
+function fillVersions() {
+  const d = catalog.devices[$('device').value];
+  $('version').innerHTML = d.versions.map((v, i) =>
+    `<option value="${i}">v${v.version}${i === 0 ? ' (última)' : ''}</option>`).join('');
+  $('version').disabled = !d.versions.length;
+  $('none').hidden = d.versions.length > 0;
+  $('flash').hidden = !d.versions.length;
+  update();
+}
+
+function update() {
+  const d = catalog.devices[$('device').value];
+  const v = d.versions[$('version').value];
+  $('note').textContent = v?.note || '';
+  if (!v) return;
+  const manifest = {
+    name: `MANCO ${d.name}`,
+    version: v.version,
+    new_install_prompt_erase: false,
+    builds: [{
+      chipFamily: d.chipFamily,
+      parts: [{ path: new URL(v.file, location.href).href, offset: 0 }]
+    }]
+  };
+  if (blobUrl) URL.revokeObjectURL(blobUrl);
+  blobUrl = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+  $('flash').setAttribute('manifest', blobUrl);
+}
+
+$('device').onchange = fillVersions;
+$('version').onchange = update;
+</script>
+</body>
+</html>
